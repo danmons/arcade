@@ -1,5 +1,5 @@
-* Open DXF files with LibreCAD
-** http://librecad.org
+* View DXF files with LibreCAD
+* http://librecad.org
 
-* Open ODS files with LibreOffice
-** http://www.libreoffice.org
+* View ODS files with LibreOffice
+* http://www.libreoffice.org
