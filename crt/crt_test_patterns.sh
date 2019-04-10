@@ -111,7 +111,7 @@ rm ${ODIR}/chunk_*.png
 ## Black/white levels
 ## Reference black is 16, so we build to 2*reference=32
 ## Reference white = 235, so we build to 255-(255-reference)*2=215
-## Test by tuning brightness/contrast until only half the gradient can be seen
+## Test black/white by tuning brightness/contrast until only half the gradient can be seen
 CXRES=${XRES}
 CYRES=$(( ${YRES}/4 ))
 CRES="${CXRES}x${CYRES}"
@@ -138,6 +138,24 @@ $M -size ${RES} \
     ${ODIR}/chunk_whitescale2.png \
     ${ODIR}/chunk_white.png \
     -tile 1x4 -geometry +0+0 ${ODIR}/level_white.png
+
+## sRGB at gamma 2.2 says that 50% grey is grey188
+## Test gamma by looking at checkerboard/grey188 so that they look the same from a distance
+CXRES=$(( ${XRES}/4 ))
+CYRES=$(( ${YRES}/4 ))
+CRES="${CXRES}x${CYRES}"
+
+$I -size ${CRES} xc:"rgb(0,0,0)" ${ODIR}/chunk_srgb_black.png
+$I -size ${CRES} pattern:gray50 ${ODIR}/chunk_srgb_checkerboard.png
+$I -size ${CRES} xc:"rgb(188,188,188)" ${ODIR}/chunk_srgb_gamma22.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png \
+    ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_checkerboard.png ${ODIR}/chunk_srgb_gamma22.png ${ODIR}/chunk_srgb_black.png \
+    ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_checkerboard.png ${ODIR}/chunk_srgb_gamma22.png ${ODIR}/chunk_srgb_black.png \
+    ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png \
+    -tile 4x4 -geometry +0+0 ${ODIR}/gamma_22_srgb.png
+
 ## Colour gradient
 CXRES=$((${XRES}/16))
 CYRES=$((${YRES}/12))
