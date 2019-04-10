@@ -50,15 +50,15 @@ Geometry tests.  Should demonstrate things like
 
 ## levels
 Check various levels, like
-* gamma - using an sRGB colour space, D65 white point and gamma 2.2 you should see
-** on the left is a pixel grid of pure black and white
-** on the right is pure grey188
-** at gamma 2.2, sitting back from the screen, left and right should match in brightness, intensity, and approximate colour
+* gamma - using an sRGB colour space, D65 white point and gamma 2.2 you should see:
+ * on the left is a pixel grid of pure black and white
+ * on the right is pure grey188
+ * at gamma 2.2, sitting back from the screen, left and right should match in brightness, intensity, and approximate colour
 
-* black levels ("brightness" on your CRT controls)
-** top bar is black0 (left) to black32 (right)
-** bottom bar is black32 (right) to black0 (left)
-** broadcast black is black16, in the centre of both levels, and should appear the same as pure black at the top and bottom, with black 16-0 all appearing the same
+* black levels ("brightness" on your CRT controls):
+ * top bar is black0 (left) to black32 (right)
+ * bottom bar is black32 (right) to black0 (left)
+ * broadcast black is black16, in the centre of both levels, and should appear the same as pure black at the top and bottom, with black 16-0 all appearing the same
 
 * white levels ("contrast" on your CRT controls)
 ** top bar is white255 (left) to white215 (right)
