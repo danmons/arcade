@@ -108,7 +108,7 @@ done
 ## Clean up temp images
 rm ${ODIR}/chunk_*.png
 
-## Black/white levels
+## Black/white/colour levels
 ## Reference black is 16, so we build to 2*reference=32
 ## Reference white = 235, so we build to 255-(255-reference)*2=215
 ## Test black/white by tuning brightness/contrast until only half the gradient can be seen
@@ -156,98 +156,260 @@ $M -size ${RES} \
     ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png ${ODIR}/chunk_srgb_black.png \
     -tile 4x4 -geometry +0+0 ${ODIR}/gamma_22_srgb.png
 
-## Colour gradient
-CXRES=$((${XRES}/16))
-CYRES=$((${YRES}/12))
+    ## Colour gradient
+    CXRES=$((${XRES}/16))
+    CYRES=$((${YRES}/12))
+    CRES="${CXRES}x${CYRES}"
+
+    for i in $(seq 10 7 99) 99
+    do
+        $I -size ${CRES} xc:"rgb($((255*${i}/100)),0,0)" ${ODIR}/chunk_red_${i}.png
+        $I -size ${CRES} xc:"rgb(0,$((255*${i}/100)),0)" ${ODIR}/chunk_green_${i}.png
+        $I -size ${CRES} xc:"rgb(0,0,$((255*${i}/100)))" ${ODIR}/chunk_blue_${i}.png
+        $I -size ${CRES} xc:"rgb($((255*${i}/100)),0,$((255*${i}/100)))" ${ODIR}/chunk_magenta_${i}.png
+        $I -size ${CRES} xc:"rgb($((255*${i}/100)),$((255*${i}/100)),0)" ${ODIR}/chunk_yellow_${i}.png
+        $I -size ${CRES} xc:"rgb(0,$((255*${i}/100)),$((255*${i}/100)))" ${ODIR}/chunk_cyan_${i}.png
+        $I -size ${CRES} xc:"rgb($((255*${i}/100)),$((255*${i}/100)),$((255*${i}/100)))" ${ODIR}/chunk_grey_${i}.png
+    done
+
+    for i in $(seq -w 1 16)
+    do
+        $I -size ${CRES} xc:"rgb(0.0.0)" ${ODIR}/chunk_black_${i}.png
+    done
+
+    $M -size ${RES} \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        ${ODIR}/chunk_black_*.png \
+        -tile 16x12 -geometry +0+0 ${ODIR}/level_rgb.png
+
+    $M -size ${RES} \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        ${ODIR}/chunk_black_*.png \
+        -tile 16x12 -geometry +0+0 ${ODIR}/level_cmy.png
+
+    $M -size ${RES} \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_grey_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
+        \
+        ${ODIR}/chunk_black_*.png \
+        ${ODIR}/chunk_black_*.png \
+        -tile 16x12 -geometry +0+0 ${ODIR}/level_rgbwcmy.png
+
+rm ${ODIR}/chunk_*.png
+
+## EBU Colour Bars
+CXRES=$(( ${XRES}/8 ))
+CYRES=$(( ${YRES}/2 ))
 CRES="${CXRES}x${CYRES}"
-
-for i in $(seq 10 7 99) 99
-do
-    $I -size ${CRES} xc:"rgb($((255*${i}/100)),0,0)" ${ODIR}/chunk_red_${i}.png
-    $I -size ${CRES} xc:"rgb(0,$((255*${i}/100)),0)" ${ODIR}/chunk_green_${i}.png
-    $I -size ${CRES} xc:"rgb(0,0,$((255*${i}/100)))" ${ODIR}/chunk_blue_${i}.png
-    $I -size ${CRES} xc:"rgb($((255*${i}/100)),0,$((255*${i}/100)))" ${ODIR}/chunk_magenta_${i}.png
-    $I -size ${CRES} xc:"rgb($((255*${i}/100)),$((255*${i}/100)),0)" ${ODIR}/chunk_yellow_${i}.png
-    $I -size ${CRES} xc:"rgb(0,$((255*${i}/100)),$((255*${i}/100)))" ${ODIR}/chunk_cyan_${i}.png
-    $I -size ${CRES} xc:"rgb($((255*${i}/100)),$((255*${i}/100)),$((255*${i}/100)))" ${ODIR}/chunk_grey_${i}.png
-done
-
-for i in $(seq -w 1 16)
-do
-    $I -size ${CRES} xc:"rgb(0.0.0)" ${ODIR}/chunk_black_${i}.png
-done
-
-$M -size ${RES} \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    -tile 16x12 -geometry +0+0 ${ODIR}/level_rgb.png
-
-$M -size ${RES} \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    -tile 16x12 -geometry +0+0 ${ODIR}/level_cmy.png
+ODIR=${RES}/ebu_bars
+mkdir -p ${ODIR}
+## colours
+#100%=255
+$I -size ${CRES} xc:"rgb(255,255,255)" ${ODIR}/chunk_bars_100_white.png
+$I -size ${CRES} xc:"rgb(255,255,0)"   ${ODIR}/chunk_bars_100_yellow.png
+$I -size ${CRES} xc:"rgb(0,255,255)"   ${ODIR}/chunk_bars_100_cyan.png
+$I -size ${CRES} xc:"rgb(0,255,0)"     ${ODIR}/chunk_bars_100_green.png
+$I -size ${CRES} xc:"rgb(255,0,255)"   ${ODIR}/chunk_bars_100_magenta.png
+$I -size ${CRES} xc:"rgb(255,0,0)"     ${ODIR}/chunk_bars_100_red.png
+$I -size ${CRES} xc:"rgb(0,0,255)"     ${ODIR}/chunk_bars_100_blue.png
+$I -size ${CRES} xc:"rgb(0,0,0)"       ${ODIR}/chunk_bars_100_black.png
+#75%=191
+$I -size ${CRES} xc:"rgb(191,191,191)" ${ODIR}/chunk_bars_75_white.png
+$I -size ${CRES} xc:"rgb(191,191,0)"   ${ODIR}/chunk_bars_75_yellow.png
+$I -size ${CRES} xc:"rgb(0,191,191)"   ${ODIR}/chunk_bars_75_cyan.png
+$I -size ${CRES} xc:"rgb(0,191,0)"     ${ODIR}/chunk_bars_75_green.png
+$I -size ${CRES} xc:"rgb(191,0,191)"   ${ODIR}/chunk_bars_75_magenta.png
+$I -size ${CRES} xc:"rgb(191,0,0)"     ${ODIR}/chunk_bars_75_red.png
+$I -size ${CRES} xc:"rgb(0,0,191)"     ${ODIR}/chunk_bars_75_blue.png
+$I -size ${CRES} xc:"rgb(0,0,0)"       ${ODIR}/chunk_bars_75_black.png
+## monochrome
+#100% monochrome equiv
+$I -size ${CRES} xc:"rgb(255,255,255)" ${ODIR}/chunk_bars_bw100_white.png
+$I -size ${CRES} xc:"rgb(237,237,237)" ${ODIR}/chunk_bars_bw100_yellow.png
+$I -size ${CRES} xc:"rgb(201,201,201)" ${ODIR}/chunk_bars_bw100_cyan.png
+$I -size ${CRES} xc:"rgb(182,182,182)" ${ODIR}/chunk_bars_bw100_green.png
+$I -size ${CRES} xc:"rgb(73,73,73)"    ${ODIR}/chunk_bars_bw100_magenta.png
+$I -size ${CRES} xc:"rgb(54,54,54)"    ${ODIR}/chunk_bars_bw100_red.png
+$I -size ${CRES} xc:"rgb(18,18,18)"    ${ODIR}/chunk_bars_bw100_blue.png
+$I -size ${CRES} xc:"rgb(0,0,0)"       ${ODIR}/chunk_bars_bw100_black.png
+#75% monochrome equiv
+$I -size ${CRES} xc:"rgb(191,191,191)" ${ODIR}/chunk_bars_bw75_white.png
+$I -size ${CRES} xc:"rgb(177,177,177)" ${ODIR}/chunk_bars_bw75_yellow.png
+$I -size ${CRES} xc:"rgb(150,150,150)" ${ODIR}/chunk_bars_bw75_cyan.png
+$I -size ${CRES} xc:"rgb(137,137,137)" ${ODIR}/chunk_bars_bw75_green.png
+$I -size ${CRES} xc:"rgb(54,54,54)"    ${ODIR}/chunk_bars_bw75_magenta.png
+$I -size ${CRES} xc:"rgb(41,41,41)"    ${ODIR}/chunk_bars_bw75_red.png
+$I -size ${CRES} xc:"rgb(14,14,14)"    ${ODIR}/chunk_bars_bw75_blue.png
+$I -size ${CRES} xc:"rgb(0,0,0)"       ${ODIR}/chunk_bars_bw75_black.png
 
 $M -size ${RES} \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_red_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_green_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_blue_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_grey_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_cyan_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_magenta_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_01.png  ${ODIR}/chunk_yellow_*.png  ${ODIR}/chunk_black_16.png \
-    \
-    ${ODIR}/chunk_black_*.png \
-    -tile 16x12 -geometry +0+0 ${ODIR}/level_rgbwcmy.png
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_bw100_white.png ${ODIR}/chunk_bars_bw100_yellow.png ${ODIR}/chunk_bars_bw100_cyan.png ${ODIR}/chunk_bars_bw100_green.png \
+    ${ODIR}/chunk_bars_bw100_magenta.png ${ODIR}/chunk_bars_bw100_red.png ${ODIR}/chunk_bars_bw100_blue.png ${ODIR}/chunk_bars_bw100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_bw100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_bw75_white.png ${ODIR}/chunk_bars_bw75_yellow.png ${ODIR}/chunk_bars_bw75_cyan.png ${ODIR}/chunk_bars_bw75_green.png \
+    ${ODIR}/chunk_bars_bw75_magenta.png ${ODIR}/chunk_bars_bw75_red.png ${ODIR}/chunk_bars_bw75_blue.png ${ODIR}/chunk_bars_bw75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_bw75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_r100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_green.png ${ODIR}/chunk_bars_100_green.png ${ODIR}/chunk_bars_100_green.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_g100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_b100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_c100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_m100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_green.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_black.png ${ODIR}/chunk_bars_100_black.png \
+    ${ODIR}/chunk_bars_100_white.png ${ODIR}/chunk_bars_100_yellow.png ${ODIR}/chunk_bars_100_cyan.png ${ODIR}/chunk_bars_100_green.png \
+    ${ODIR}/chunk_bars_100_magenta.png ${ODIR}/chunk_bars_100_red.png ${ODIR}/chunk_bars_100_blue.png ${ODIR}/chunk_bars_100_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_y100.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_r75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_green.png ${ODIR}/chunk_bars_75_green.png ${ODIR}/chunk_bars_75_green.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_g75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_b75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_c75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_m75.png
+
+$M -size ${RES} \
+    ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_green.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_black.png ${ODIR}/chunk_bars_75_black.png \
+    ${ODIR}/chunk_bars_75_white.png ${ODIR}/chunk_bars_75_yellow.png ${ODIR}/chunk_bars_75_cyan.png ${ODIR}/chunk_bars_75_green.png \
+    ${ODIR}/chunk_bars_75_magenta.png ${ODIR}/chunk_bars_75_red.png ${ODIR}/chunk_bars_75_blue.png ${ODIR}/chunk_bars_75_black.png \
+    -tile 8x2 -geometry +0+0 ${ODIR}/ebu_bars_y75.png
 
 rm ${ODIR}/chunk_*.png
 
